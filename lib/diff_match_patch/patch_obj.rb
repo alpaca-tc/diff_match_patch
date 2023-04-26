@@ -1,5 +1,3 @@
-require 'uri'
-
 # Class representing one patch operation.
 class DiffMatchPatch
   class PatchObj
@@ -19,7 +17,7 @@ class DiffMatchPatch
     OPERATOR_TO_CHAR = {insert: '+', delete: '-', equal: ' '}
     private_constant :OPERATOR_TO_CHAR
 
-    ENCODE_REGEX = /[^0-9A-Za-z_.;!~*'(),\/?:@&=+$\#-]/
+    ENCODE_REGEX = /[^ 0-9A-Za-z_.;!~*'(),\/?:@&=+$\#-]/
     private_constant :ENCODE_REGEX
 
     # Emulate GNU diff's format
@@ -33,7 +31,7 @@ class DiffMatchPatch
 
       # Encode the body of the patch with %xx notation.
       text += diffs.map do |op, data|
-        [OPERATOR_TO_CHAR[op], URI.encode(data, ENCODE_REGEX), "\n"].join
+        [OPERATOR_TO_CHAR[op], Coder.encode(data), "\n"].join
       end.join.gsub('%20', ' ')
 
       return text
