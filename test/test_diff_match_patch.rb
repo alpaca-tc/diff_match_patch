@@ -60,46 +60,46 @@ class DiffTest < Test::Unit::TestCase
 
     # Single Match.
     assert_equal(
-      ['12', '90', 'a', 'z', '345678'], 
+      ['12', '90', 'a', 'z', '345678'],
       @dmp.diff_halfMatch('1234567890', 'a345678z')
     )
 
     assert_equal(
-      ['a', 'z', '12', '90', '345678'], 
+      ['a', 'z', '12', '90', '345678'],
       @dmp.diff_halfMatch('a345678z', '1234567890')
     )
 
     assert_equal(
-      ['abc', 'z', '1234', '0', '56789'], 
+      ['abc', 'z', '1234', '0', '56789'],
       @dmp.diff_halfMatch('abc56789z', '1234567890')
     )
 
     assert_equal(
-      ['a', 'xyz', '1', '7890', '23456'], 
+      ['a', 'xyz', '1', '7890', '23456'],
       @dmp.diff_halfMatch('a23456xyz', '1234567890')
     )
 
     # Multiple Matches.
     assert_equal(
-      ['12123', '123121', 'a', 'z', '1234123451234'], 
+      ['12123', '123121', 'a', 'z', '1234123451234'],
       @dmp.diff_halfMatch('121231234123451234123121', 'a1234123451234z')
     )
 
     assert_equal(
-      ['', '-=-=-=-=-=', 'x', '', 'x-=-=-=-=-=-=-='], 
+      ['', '-=-=-=-=-=', 'x', '', 'x-=-=-=-=-=-=-='],
       @dmp.diff_halfMatch('x-=-=-=-=-=-=-=-=-=-=-=-=', 'xx-=-=-=-=-=-=-=')
     )
 
     assert_equal(
-      ['-=-=-=-=-=', '', '', 'y', '-=-=-=-=-=-=-=y'], 
+      ['-=-=-=-=-=', '', '', 'y', '-=-=-=-=-=-=-=y'],
       @dmp.diff_halfMatch('-=-=-=-=-=-=-=-=-=-=-=-=y', '-=-=-=-=-=-=-=yy')
     )
 
     # Non-optimal halfmatch.
-    # Optimal diff would be -q+x=H-i+e=lloHe+Hu=llo-Hew+y 
+    # Optimal diff would be -q+x=H-i+e=lloHe+Hu=llo-Hew+y
     # not -qHillo+x=HelloHe-w+Hulloy
     assert_equal(
-      ['qHillo', 'w', 'x', 'Hulloy', 'HelloHe'], 
+      ['qHillo', 'w', 'x', 'Hulloy', 'HelloHe'],
       @dmp.diff_halfMatch('qHilloHelloHew', 'xHelloHeHulloy')
     )
 
@@ -111,17 +111,17 @@ class DiffTest < Test::Unit::TestCase
   def test_diff_linesToChars
     # Convert lines down to characters.
     assert_equal(
-      ["\x01\x02\x01", "\x02\x01\x02", ['', "alpha\n", "beta\n"]], 
+      ["\x01\x02\x01", "\x02\x01\x02", ['', "alpha\n", "beta\n"]],
       @dmp.diff_linesToChars("alpha\nbeta\nalpha\n", "beta\nalpha\nbeta\n")
     )
 
     assert_equal(
-      ['', "\x01\x02\x03\x03", ['', "alpha\r\n", "beta\r\n", "\r\n"]], 
+      ['', "\x01\x02\x03\x03", ['', "alpha\r\n", "beta\r\n", "\r\n"]],
       @dmp.diff_linesToChars('', "alpha\r\nbeta\r\n\r\n\r\n")
     )
 
     assert_equal(
-      ["\x01", "\x02", ['', 'a', 'b']], 
+      ["\x01", "\x02", ['', 'a', 'b']],
       @dmp.diff_linesToChars('a', 'b')
     )
 
@@ -142,7 +142,7 @@ class DiffTest < Test::Unit::TestCase
     diffs = [[:equal, "\x01\x02\x01"], [:insert, "\x02\x01\x02"]]
     @dmp.diff_charsToLines(diffs, ['', "alpha\n", "beta\n"])
     assert_equal(
-      [[:equal, "alpha\nbeta\nalpha\n"], [:insert, "beta\nalpha\nbeta\n"]], 
+      [[:equal, "alpha\nbeta\nalpha\n"], [:insert, "beta\nalpha\nbeta\n"]],
       diffs
     )
 
@@ -190,7 +190,7 @@ class DiffTest < Test::Unit::TestCase
 
     # Merge interweave.
     diffs = [
-      [:delete, 'a'], [:insert, 'b'], [:delete, 'c'], 
+      [:delete, 'a'], [:insert, 'b'], [:delete, 'c'],
       [:insert, 'd'], [:equal, 'e'], [:equal, 'f']
     ]
     @dmp.diff_cleanupMerge(diffs)
@@ -200,18 +200,18 @@ class DiffTest < Test::Unit::TestCase
     diffs = [[:delete, 'a'], [:insert, 'abc'], [:delete, 'dc']]
     @dmp.diff_cleanupMerge(diffs)
     assert_equal(
-      [[:equal, 'a'], [:delete, 'd'], [:insert, 'b'],[:equal, 'c']], 
+      [[:equal, 'a'], [:delete, 'd'], [:insert, 'b'],[:equal, 'c']],
       diffs
     )
 
     # Prefix and suffix detection with equalities.
     diffs = [
-      [:equal, 'x'], [:delete, 'a'], [:insert, 'abc'], 
+      [:equal, 'x'], [:delete, 'a'], [:insert, 'abc'],
       [:delete, 'dc'], [:equal, 'y']
     ]
     @dmp.diff_cleanupMerge(diffs)
     assert_equal(
-      [[:equal, 'xa'], [:delete, 'd'], [:insert, 'b'], [:equal, 'cy']], 
+      [[:equal, 'xa'], [:delete, 'd'], [:insert, 'b'], [:equal, 'cy']],
       diffs
     )
 
@@ -227,7 +227,7 @@ class DiffTest < Test::Unit::TestCase
 
     # Slide edit left recursive.
     diffs = [
-      [:equal, 'a'], [:delete, 'b'], [:equal, 'c'], 
+      [:equal, 'a'], [:delete, 'b'], [:equal, 'c'],
       [:delete, 'ac'], [:equal, 'x']
     ]
     @dmp.diff_cleanupMerge(diffs)
@@ -235,7 +235,7 @@ class DiffTest < Test::Unit::TestCase
 
     # Slide edit right recursive.
     diffs = [
-      [:equal, 'x'], [:delete, 'ca'], [:equal, 'c'], 
+      [:equal, 'x'], [:delete, 'ca'], [:equal, 'c'],
       [:delete, 'b'], [:equal, 'a']
     ]
     @dmp.diff_cleanupMerge(diffs)
@@ -251,16 +251,16 @@ class DiffTest < Test::Unit::TestCase
 
     # Blank lines.
     diffs = [
-      [:equal, "AAA\r\n\r\nBBB"], 
-      [:insert, "\r\nDDD\r\n\r\nBBB"], 
+      [:equal, "AAA\r\n\r\nBBB"],
+      [:insert, "\r\nDDD\r\n\r\nBBB"],
       [:equal, "\r\nEEE"]
     ]
     @dmp.diff_cleanupSemanticLossless(diffs)
     assert_equal([
-        [:equal, "AAA\r\n\r\n"], 
-        [:insert, "BBB\r\nDDD\r\n\r\n"], 
+        [:equal, "AAA\r\n\r\n"],
+        [:insert, "BBB\r\nDDD\r\n\r\n"],
         [:equal, "BBB\r\nEEE"]
-      ], 
+      ],
       diffs
     )
 
@@ -268,7 +268,7 @@ class DiffTest < Test::Unit::TestCase
     diffs = [[:equal, "AAA\r\nBBB"], [:insert, " DDD\r\nBBB"], [:equal, " EEE"]]
     @dmp.diff_cleanupSemanticLossless(diffs)
     assert_equal(
-      [[:equal, "AAA\r\n"], [:insert, "BBB DDD\r\n"], [:equal, "BBB EEE"]], 
+      [[:equal, "AAA\r\n"], [:insert, "BBB DDD\r\n"], [:equal, "BBB EEE"]],
       diffs
     )
 
@@ -276,7 +276,7 @@ class DiffTest < Test::Unit::TestCase
     diffs = [[:equal, 'The c'], [:insert, 'ow and the c'], [:equal, 'at.']]
     @dmp.diff_cleanupSemanticLossless(diffs)
     assert_equal(
-      [[:equal, 'The '], [:insert, 'cow and the '], [:equal, 'cat.']], 
+      [[:equal, 'The '], [:insert, 'cow and the '], [:equal, 'cat.']],
       diffs
     )
 
@@ -284,7 +284,7 @@ class DiffTest < Test::Unit::TestCase
     diffs = [[:equal, 'The-c'], [:insert, 'ow-and-the-c'], [:equal, 'at.']]
     @dmp.diff_cleanupSemanticLossless(diffs)
     assert_equal(
-      [[:equal, 'The-'], [:insert, 'cow-and-the-'], [:equal, 'cat.']], 
+      [[:equal, 'The-'], [:insert, 'cow-and-the-'], [:equal, 'cat.']],
       diffs
     )
 
@@ -310,18 +310,18 @@ class DiffTest < Test::Unit::TestCase
     diffs = [[:delete, 'ab'], [:insert, 'cd'], [:equal, '12'], [:delete, 'e']]
     @dmp.diff_cleanupSemantic(diffs)
     assert_equal(
-      [[:delete, 'ab'], [:insert, 'cd'], [:equal, '12'], [:delete, 'e']], 
+      [[:delete, 'ab'], [:insert, 'cd'], [:equal, '12'], [:delete, 'e']],
       diffs
     )
 
     # No elimination #2.
     diffs = [
-      [:delete, 'abc'], [:insert, 'ABC'], 
+      [:delete, 'abc'], [:insert, 'ABC'],
       [:equal, '1234'], [:delete, 'wxyz']
     ]
     @dmp.diff_cleanupSemantic(diffs)
     assert_equal(
-      [[:delete, 'abc'], [:insert, 'ABC'], [:equal, '1234'], [:delete, 'wxyz']], 
+      [[:delete, 'abc'], [:insert, 'ABC'], [:equal, '1234'], [:delete, 'wxyz']],
       diffs
     )
 
@@ -332,7 +332,7 @@ class DiffTest < Test::Unit::TestCase
 
     # Backpass elimination.
     diffs = [
-      [:delete, 'ab'], [:equal, 'cd'], [:delete, 'e'], 
+      [:delete, 'ab'], [:equal, 'cd'], [:delete, 'e'],
       [:equal, 'f'], [:insert, 'g']
     ]
     @dmp.diff_cleanupSemantic(diffs)
@@ -340,8 +340,8 @@ class DiffTest < Test::Unit::TestCase
 
     # Multiple eliminations.
     diffs = [
-      [:insert, '1'], [:equal, 'A'], [:delete, 'B'], 
-      [:insert, '2'], [:equal, '_'], [:insert, '1'], 
+      [:insert, '1'], [:equal, 'A'], [:delete, 'B'],
+      [:insert, '2'], [:equal, '_'], [:insert, '1'],
       [:equal, 'A'], [:delete, 'B'], [:insert, '2']
     ]
     @dmp.diff_cleanupSemantic(diffs)
@@ -351,7 +351,7 @@ class DiffTest < Test::Unit::TestCase
     diffs = [[:equal, 'The c'], [:delete, 'ow and the c'], [:equal, 'at.']]
     @dmp.diff_cleanupSemantic(diffs)
     assert_equal(
-      [[:equal, 'The '], [:delete, 'cow and the '], [:equal, 'cat.']], 
+      [[:equal, 'The '], [:delete, 'cow and the '], [:equal, 'cat.']],
       diffs
     )
 
@@ -367,14 +367,14 @@ class DiffTest < Test::Unit::TestCase
 
     # Two overlap eliminations.
     diffs = [
-      [:delete, 'abcd1212'], [:insert, '1212efghi'], [:equal, '----'], 
+      [:delete, 'abcd1212'], [:insert, '1212efghi'], [:equal, '----'],
       [:delete, 'A3'], [:insert, '3BC']
     ]
     @dmp.diff_cleanupSemantic(diffs)
     assert_equal([
-        [:delete, 'abcd'], [:equal, '1212'], [:insert, 'efghi'], 
+        [:delete, 'abcd'], [:equal, '1212'], [:insert, 'efghi'],
         [:equal, '----'], [:delete, 'A'], [:equal, '3'], [:insert, 'BC']
-      ], 
+      ],
       diffs
     )
   end
@@ -389,20 +389,20 @@ def test_diff_cleanupEfficiency
 
     # No elimination.
     diffs = [
-      [:delete, 'ab'], [:insert, '12'], [:equal, 'wxyz'], 
+      [:delete, 'ab'], [:insert, '12'], [:equal, 'wxyz'],
       [:delete, 'cd'], [:insert, '34']
     ]
     @dmp.diff_cleanupEfficiency(diffs)
     assert_equal([
-        [:delete, 'ab'], [:insert, '12'], [:equal, 'wxyz'], 
+        [:delete, 'ab'], [:insert, '12'], [:equal, 'wxyz'],
         [:delete, 'cd'], [:insert, '34']
-      ], 
+      ],
       diffs
     )
 
     # Four-edit elimination.
     diffs = [
-      [:delete, 'ab'], [:insert, '12'], [:equal, 'xyz'], 
+      [:delete, 'ab'], [:insert, '12'], [:equal, 'xyz'],
       [:delete, 'cd'], [:insert, '34']
     ]
     @dmp.diff_cleanupEfficiency(diffs)
@@ -415,7 +415,7 @@ def test_diff_cleanupEfficiency
 
     # Backpass elimination.
     diffs = [
-      [:delete, 'ab'], [:insert, '12'], [:equal, 'xy'], [:insert, '34'], 
+      [:delete, 'ab'], [:insert, '12'], [:equal, 'xy'], [:insert, '34'],
       [:equal, 'z'], [:delete, 'cd'], [:insert, '56']
     ]
     @dmp.diff_cleanupEfficiency(diffs)
@@ -424,7 +424,7 @@ def test_diff_cleanupEfficiency
     # High cost elimination.
     @dmp.diff_editCost = 5
     diffs = [
-      [:delete, 'ab'], [:insert, '12'], [:equal, 'wxyz'], 
+      [:delete, 'ab'], [:insert, '12'], [:equal, 'wxyz'],
       [:delete, 'cd'], [:insert, '34']
     ]
     @dmp.diff_cleanupEfficiency(diffs)
@@ -437,7 +437,7 @@ def test_diff_cleanupEfficiency
     diffs = [[:equal, 'a\n'], [:delete, '<B>b</B>'], [:insert, 'c&d']]
     assert_equal(
       '<span>a&para;<br></span><del style="background:#ffe6e6;">&lt;B&gt;' +
-      'b&lt;/B&gt;</del><ins style="background:#e6ffe6;">c&amp;d</ins>', 
+      'b&lt;/B&gt;</del><ins style="background:#e6ffe6;">c&amp;d</ins>',
       @dmp.diff_prettyHtml(diffs)
     )
   end
@@ -445,7 +445,7 @@ def test_diff_cleanupEfficiency
   def test_diff_text
     # Compute the source and destination texts.
     diffs = [
-      [:equal, 'jump'], [:delete, 's'], [:insert, 'ed'], [:equal, ' over '], 
+      [:equal, 'jump'], [:delete, 's'], [:insert, 'ed'], [:equal, ' over '],
       [:delete, 'the'], [:insert, 'a'], [:equal, ' lazy']
     ]
     assert_equal('jumps over the lazy', @dmp.diff_text1(diffs))
@@ -455,7 +455,7 @@ def test_diff_cleanupEfficiency
   def test_diff_delta
     # Convert a diff into delta string.
     diffs = [
-      [:equal, 'jump'], [:delete, 's'], [:insert, 'ed'], [:equal, ' over '], 
+      [:equal, 'jump'], [:delete, 's'], [:insert, 'ed'], [:equal, ' over '],
       [:delete, 'the'], [:insert, 'a'], [:equal, ' lazy'], [:insert, 'old dog']
     ]
     text1 = @dmp.diff_text1(diffs)
@@ -475,12 +475,12 @@ def test_diff_cleanupEfficiency
     # Generates error (19 != 18).
     assert_raise ArgumentError do
       @dmp.diff_fromDelta(text1[1..-1], delta)
-    end   
+    end
 
     # Test deltas with special characters.
     diffs = [
-      [:equal, "\u0680 \x00 \t %"], 
-      [:delete, "\u0681 \x01 \n ^"], 
+      [:equal, "\u0680 \x00 \t %"],
+      [:delete, "\u0681 \x01 \n ^"],
       [:insert, "\u0682 \x02 \\ |"]
     ]
     text1 = @dmp.diff_text1(diffs)
@@ -535,14 +535,14 @@ def test_diff_cleanupEfficiency
     # the insertion and deletion pairs are swapped.
     # If the order changes, tweak this test as required.
     diffs = [
-      [:delete, 'c'], [:insert, 'm'], [:equal, 'a'], 
+      [:delete, 'c'], [:insert, 'm'], [:equal, 'a'],
       [:delete, 't'], [:insert, 'p']
     ]
     assert_equal(diffs, @dmp.diff_bisect(a, b, nil))
 
     # Timeout.
     assert_equal(
-      [[:delete, 'cat'], [:insert, 'map']], 
+      [[:delete, 'cat'], [:insert, 'map']],
       @dmp.diff_bisect(a, b, Time.now - 1)
     )
   end
@@ -557,29 +557,29 @@ def test_diff_cleanupEfficiency
 
     # Simple insertion.
     assert_equal(
-      [[:equal, 'ab'], [:insert, '123'], [:equal, 'c']], 
+      [[:equal, 'ab'], [:insert, '123'], [:equal, 'c']],
       @dmp.diff_main('abc', 'ab123c', false)
     )
 
     # Simple deletion.
     assert_equal(
-      [[:equal, 'a'], [:delete, '123'], [:equal, 'bc']], 
+      [[:equal, 'a'], [:delete, '123'], [:equal, 'bc']],
       @dmp.diff_main('a123bc', 'abc', false)
     )
 
     # Two insertions.
     assert_equal([
-        [:equal, 'a'], [:insert, '123'], [:equal, 'b'], 
+        [:equal, 'a'], [:insert, '123'], [:equal, 'b'],
         [:insert, '456'], [:equal, 'c']
-      ], 
+      ],
       @dmp.diff_main('abc', 'a123b456c', false)
     )
 
     # Two deletions.
     assert_equal([
-        [:equal, 'a'], [:delete, '123'], [:equal, 'b'], 
+        [:equal, 'a'], [:delete, '123'], [:equal, 'b'],
         [:delete, '456'], [:equal, 'c']
-      ], 
+      ],
       @dmp.diff_main('a123b456c', 'abc', false)
     )
 
@@ -588,45 +588,45 @@ def test_diff_cleanupEfficiency
     @dmp.diff_timeout = 0
     # Simple cases.
     assert_equal(
-      [[:delete, 'a'], [:insert, 'b']], 
+      [[:delete, 'a'], [:insert, 'b']],
       @dmp.diff_main('a', 'b', false)
     )
 
     assert_equal([
-        [:delete, 'Apple'], [:insert, 'Banana'], [:equal, 's are a'], 
+        [:delete, 'Apple'], [:insert, 'Banana'], [:equal, 's are a'],
         [:insert, 'lso'], [:equal, ' fruit.']
-      ], 
+      ],
       @dmp.diff_main('Apples are a fruit.', 'Bananas are also fruit.', false)
     )
 
     assert_equal([
-        [:delete, 'a'], [:insert, "\u0680"], [:equal, 'x'], 
+        [:delete, 'a'], [:insert, "\u0680"], [:equal, 'x'],
         [:delete, "\t"], [:insert, "\0"]
-      ], 
+      ],
       @dmp.diff_main("ax\t", "\u0680x\0", false)
     )
 
     # Overlaps.
     assert_equal([
-        [:delete, '1'], [:equal, 'a'], [:delete, 'y'],  
+        [:delete, '1'], [:equal, 'a'], [:delete, 'y'],
         [:equal, 'b'], [:delete, '2'], [:insert, 'xab']
-      ], 
+      ],
       @dmp.diff_main('1ayb2', 'abxab', false)
     )
 
     assert_equal(
-      [[:insert, 'xaxcx'], [:equal, 'abc'], [:delete, 'y']], 
+      [[:insert, 'xaxcx'], [:equal, 'abc'], [:delete, 'y']],
       @dmp.diff_main('abcy', 'xaxcxabc', false)
     )
 
     assert_equal([
-        [:delete, 'ABCD'], [:equal, 'a'], [:delete, '='], [:insert, '-'], 
-        [:equal, 'bcd'], [:delete, '='], [:insert, '-'], 
+        [:delete, 'ABCD'], [:equal, 'a'], [:delete, '='], [:insert, '-'],
+        [:equal, 'bcd'], [:delete, '='], [:insert, '-'],
         [:equal, 'efghijklmnopqrs'], [:delete, 'EFGHIJKLMNOefg']
-      ], 
+      ],
       @dmp.diff_main(
-        'ABCDa=bcd=efghijklmnopqrsEFGHIJKLMNOefg', 
-        'a-bcd-efghijklmnopqrs', 
+        'ABCDa=bcd=efghijklmnopqrsEFGHIJKLMNOefg',
+        'a-bcd-efghijklmnopqrs',
         false
       )
     )
@@ -691,17 +691,17 @@ def test_diff_cleanupEfficiency
         "1234567890\n1234567890\n1234567890\nabcdefghij\n1234567890\n" +
         "1234567890\n1234567890\nabcdefghij\n"
 
-    
+
     diffs_linemode = @dmp.diff_main(a, b, false)
-    diffs_textmode = @dmp.diff_main(a, b, true)    
+    diffs_textmode = @dmp.diff_main(a, b, true)
 
     assert_equal(
-      @dmp.diff_text1(diffs_linemode), 
+      @dmp.diff_text1(diffs_linemode),
       @dmp.diff_text1(diffs_textmode)
     )
 
     assert_equal(
-      @dmp.diff_text2(diffs_linemode), 
+      @dmp.diff_text2(diffs_linemode),
       @dmp.diff_text2(diffs_textmode)
     )
 
@@ -758,18 +758,18 @@ def test_diff_cleanupEfficiency
     # Distance test.
     @dmp.match_distance = 10  # Strict location.
     assert_equal(
-      -1, 
+      -1,
       @dmp.match_bitap('abcdefghijklmnopqrstuvwxyz', 'abcdefg', 24)
     )
 
     assert_equal(
-      0, 
+      0,
       @dmp.match_bitap('abcdefghijklmnopqrstuvwxyz', 'abcdxxefg', 1)
     )
 
     @dmp.match_distance = 1000  # Loose location.
     assert_equal(
-      0, 
+      0,
       @dmp.match_bitap('abcdefghijklmnopqrstuvwxyz', 'abcdefg', 24)
     )
   end
@@ -793,10 +793,10 @@ def test_diff_cleanupEfficiency
 
     # Complex match.
     assert_equal(
-      4, 
+      4,
       @dmp.match_main(
-        'I am the very model of a modern major general.', 
-        ' that berry ', 
+        'I am the very model of a modern major general.',
+        ' that berry ',
         5
       )
     )
@@ -811,7 +811,7 @@ def test_diff_cleanupEfficiency
 
   def test_patch_obj
     # Patch Object.
-    p = PatchObj.new
+    p = DiffMatchPatch::PatchObj.new
     p.start1 = 20
     p.start2 = 21
     p.length1 = 18
@@ -833,7 +833,7 @@ def test_diff_cleanupEfficiency
   end
 
   def test_patch_fromText
-    assert_equal([], @dmp.patch_fromText(""))    
+    assert_equal([], @dmp.patch_fromText(""))
 
     [
       "@@ -21,18 +22,17 @@\n jump\n-s\n+ed\n  over \n-the\n+a\n %0Alaz\n",
@@ -888,7 +888,7 @@ def test_diff_cleanupEfficiency
     # Same, but with ambiguity.
     p = @dmp.patch_fromText("@@ -3 +3,2 @@\n-e\n+at\n").first
     @dmp.patch_addContext(
-      p, 
+      p,
       'The quick brown fox jumps.  The quick brown fox crashes.'
     );
 
@@ -909,7 +909,7 @@ def test_diff_cleanupEfficiency
     expectedPatch = "@@ -1,8 +1,7 @@\n Th\n-at\n+e\n  qui\n@@ -21,17 +21,18 " +
                     "@@\n jump\n-ed\n+s\n  over \n-a\n+the\n  laz\n"
 
-    # The second patch must be "-21,17 +21,18", 
+    # The second patch must be "-21,17 +21,18",
     # not "-22,17 +21,18" due to rolling context
     patches = @dmp.patch_make(text2, text1)
     assert_equal(expectedPatch, @dmp.patch_toText(patches))
@@ -935,12 +935,12 @@ def test_diff_cleanupEfficiency
 
     # Character encoding.
     patches = @dmp.patch_make(
-      '`1234567890-=[]\\;\',./', 
+      '`1234567890-=[]\\;\',./',
       '~!@#$%^&*()_+{}|:"<>?'
     )
     assert_equal(
       "@@ -1,21 +1,21 @@\n-%601234567890-=%5B%5D%5C;\',./\n+~!" +
-      "@\#$%25%5E&*()_+%7B%7D%7C:%22%3C%3E?\n", 
+      "@\#$%25%5E&*()_+%7B%7D%7C:%22%3C%3E?\n",
       @dmp.patch_toText(patches)
     )
 
@@ -973,7 +973,7 @@ def test_diff_cleanupEfficiency
   def test_patch_splitMax
     # Assumes that dmp.Match_MaxBits is 32.
     patches = @dmp.patch_make(
-      'abcdefghijklmnopqrstuvwxyz01234567890', 
+      'abcdefghijklmnopqrstuvwxyz01234567890',
       'XabXcdXefXghXijXklXmnXopXqrXstXuvXwxXyzX01X23X45X67X89X0'
     )
 
@@ -982,13 +982,13 @@ def test_diff_cleanupEfficiency
       "@@ -1,32 +1,46 @@\n+X\n ab\n+X\n cd\n+X\n ef\n+X\n gh\n+X\n "+
       "ij\n+X\n kl\n+X\n mn\n+X\n op\n+X\n qr\n+X\n st\n+X\n uv\n+X\n " +
       "wx\n+X\n yz\n+X\n 012345\n@@ -25,13 +39,18 @@\n zX01\n+X\n 23\n+X\n " +
-      "45\n+X\n 67\n+X\n 89\n+X\n 0\n", 
+      "45\n+X\n 67\n+X\n 89\n+X\n 0\n",
       @dmp.patch_toText(patches)
     )
 
     patches = @dmp.patch_make(
       'abcdef1234567890123456789012345678901234567890' +
-      '123456789012345678901234567890uvwxyz', 
+      '123456789012345678901234567890uvwxyz',
       'abcdefuvwxyz'
     )
 
@@ -997,7 +997,7 @@ def test_diff_cleanupEfficiency
     assert_equal(oldToText, @dmp.patch_toText(patches))
 
     patches = @dmp.patch_make(
-      '1234567890123456789012345678901234567890123456789012345678901234567890', 
+      '1234567890123456789012345678901234567890123456789012345678901234567890',
       'abc'
     )
 
@@ -1005,19 +1005,19 @@ def test_diff_cleanupEfficiency
     assert_equal(
       "@@ -1,32 +1,4 @@\n-1234567890123456789012345678\n 9012\n" +
       "@@ -29,32 +1,4 @@\n-9012345678901234567890123456\n 7890\n" +
-      "@@ -57,14 +1,3 @@\n-78901234567890\n+abc\n", 
+      "@@ -57,14 +1,3 @@\n-78901234567890\n+abc\n",
       @dmp.patch_toText(patches)
     )
 
     patches = @dmp.patch_make(
-      'abcdefghij , h : 0 , t : 1 abcdefghij , h : 0 , t : 1 abcdefghij , h : 0 , t : 1', 
+      'abcdefghij , h : 0 , t : 1 abcdefghij , h : 0 , t : 1 abcdefghij , h : 0 , t : 1',
       'abcdefghij , h : 1 , t : 1 abcdefghij , h : 1 , t : 1 abcdefghij , h : 0 , t : 1'
     )
 
     @dmp.patch_splitMax(patches)
     assert_equal(
       "@@ -2,32 +2,32 @@\n bcdefghij , h : \n-0\n+1\n  , t : 1 abcdef\n" +
-      "@@ -29,32 +29,32 @@\n bcdefghij , h : \n-0\n+1\n  , t : 1 abcdef\n", 
+      "@@ -29,32 +29,32 @@\n bcdefghij , h : \n-0\n+1\n  , t : 1 abcdef\n",
       @dmp.patch_toText(patches)
     )
   end
@@ -1028,7 +1028,7 @@ def test_diff_cleanupEfficiency
     assert_equal("@@ -0,0 +1,4 @@\n+test\n", @dmp.patch_toText(patches))
     @dmp.patch_addPadding(patches)
     assert_equal(
-      "@@ -1,8 +1,12 @@\n %01%02%03%04\n+test\n %01%02%03%04\n", 
+      "@@ -1,8 +1,12 @@\n %01%02%03%04\n+test\n %01%02%03%04\n",
       @dmp.patch_toText(patches)
     )
 
@@ -1037,19 +1037,19 @@ def test_diff_cleanupEfficiency
     assert_equal("@@ -1,2 +1,6 @@\n X\n+test\n Y\n", @dmp.patch_toText(patches))
     @dmp.patch_addPadding(patches)
     assert_equal(
-      "@@ -2,8 +2,12 @@\n %02%03%04X\n+test\n Y%01%02%03\n", 
+      "@@ -2,8 +2,12 @@\n %02%03%04X\n+test\n Y%01%02%03\n",
       @dmp.patch_toText(patches)
     )
 
     # Both edges none.
     patches = @dmp.patch_make('XXXXYYYY', 'XXXXtestYYYY')
     assert_equal(
-      "@@ -1,8 +1,12 @@\n XXXX\n+test\n YYYY\n", 
+      "@@ -1,8 +1,12 @@\n XXXX\n+test\n YYYY\n",
       @dmp.patch_toText(patches)
     )
     @dmp.patch_addPadding(patches)
     assert_equal(
-      "@@ -5,8 +5,12 @@\n XXXX\n+test\n YYYY\n", 
+      "@@ -5,8 +5,12 @@\n XXXX\n+test\n YYYY\n",
       @dmp.patch_toText(patches)
     )
   end
@@ -1065,50 +1065,50 @@ def test_diff_cleanupEfficiency
 
     # Exact match.
     patches = @dmp.patch_make(
-      'The quick brown fox jumps over the lazy dog.', 
+      'The quick brown fox jumps over the lazy dog.',
       'That quick brown fox jumped over a lazy dog.'
     )
 
     results = @dmp.patch_apply(
-      patches, 
+      patches,
       'The quick brown fox jumps over the lazy dog.'
     )
 
     assert_equal(
-      ['That quick brown fox jumped over a lazy dog.', [true, true]], 
+      ['That quick brown fox jumped over a lazy dog.', [true, true]],
       results
     )
 
     # Partial match.
     results = @dmp.patch_apply(
-      patches, 
+      patches,
       'The quick red rabbit jumps over the tired tiger.'
     )
 
     assert_equal(
-      ['That quick red rabbit jumped over a tired tiger.', [true, true]], 
+      ['That quick red rabbit jumped over a tired tiger.', [true, true]],
       results
     )
 
     # Failed match.
     results = @dmp.patch_apply(
-      patches, 
+      patches,
       'I am the very model of a modern major general.'
     )
 
     assert_equal(
-      ['I am the very model of a modern major general.', [false, false]], 
+      ['I am the very model of a modern major general.', [false, false]],
       results
     )
 
     # Big delete, small change.
     patches = @dmp.patch_make(
-      'x1234567890123456789012345678901234567890123456789012345678901234567890y', 
+      'x1234567890123456789012345678901234567890123456789012345678901234567890y',
       'xabcy'
     )
 
     results = @dmp.patch_apply(
-      patches, 
+      patches,
       'x123456789012345678901234567890-----++++++++++-----' +
       '123456789012345678901234567890y'
     )
@@ -1117,34 +1117,34 @@ def test_diff_cleanupEfficiency
 
     # Big delete, big change 1.
     patches = @dmp.patch_make(
-      'x1234567890123456789012345678901234567890123456789012345678901234567890y', 
+      'x1234567890123456789012345678901234567890123456789012345678901234567890y',
       'xabcy'
     )
 
     results = @dmp.patch_apply(
-      patches, 
+      patches,
       'x12345678901234567890---------------++++++++++---------------' +
       '12345678901234567890y'
     )
 
     assert_equal([
         'xabc12345678901234567890---------------++++++++++---------------' +
-        '12345678901234567890y', 
+        '12345678901234567890y',
         [false, true]
-      ], 
+      ],
       results
     )
 
     # Big delete, big change 2.
     @dmp.patch_deleteThreshold = 0.6
     patches = @dmp.patch_make(
-      'x1234567890123456789012345678901234567890123456789012345678901234567890y', 
+      'x1234567890123456789012345678901234567890123456789012345678901234567890y',
       'xabcy'
     )
 
     results = @dmp.patch_apply(
-      patches, 
-      'x12345678901234567890---------------++++++++++---------------' + 
+      patches,
+      'x12345678901234567890---------------++++++++++---------------' +
       '12345678901234567890y'
     )
 
@@ -1155,18 +1155,18 @@ def test_diff_cleanupEfficiency
     @dmp.match_threshold = 0.0
     @dmp.match_distance = 0
     patches = @dmp.patch_make(
-      'abcdefghijklmnopqrstuvwxyz--------------------1234567890', 
-      'abcXXXXXXXXXXdefghijklmnopqrstuvwxyz--------------------' + 
+      'abcdefghijklmnopqrstuvwxyz--------------------1234567890',
+      'abcXXXXXXXXXXdefghijklmnopqrstuvwxyz--------------------' +
       '1234567YYYYYYYYYY890'
     )
 
     results = @dmp.patch_apply(
-      patches, 
+      patches,
       'ABCDEFGHIJKLMNOPQRSTUVWXYZ--------------------1234567890'
     )
 
     assert_equal([
-        'ABCDEFGHIJKLMNOPQRSTUVWXYZ--------------------1234567YYYYYYYYYY890', 
+        'ABCDEFGHIJKLMNOPQRSTUVWXYZ--------------------1234567YYYYYYYYYY890',
         [false, true]
       ],
       results
@@ -1182,7 +1182,7 @@ def test_diff_cleanupEfficiency
 
     # No side effects with major delete.
     patches = @dmp.patch_make(
-      'The quick brown fox jumps over the lazy dog.', 
+      'The quick brown fox jumps over the lazy dog.',
       'Woof'
     )
 
