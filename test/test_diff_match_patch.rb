@@ -379,7 +379,7 @@ class DiffTest < Test::Unit::TestCase
     )
   end
 
-def test_diff_cleanup_efficiency
+  def test_diff_cleanup_efficiency
     # Cleanup operationally trivial equalities.
     @dmp.diff_edit_cost = 4
     # Null case.
