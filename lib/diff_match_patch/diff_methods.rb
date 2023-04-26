@@ -13,7 +13,7 @@ class DiffMatchPatch
     # stripping any common prefix or suffix off the texts before editing.
     def diff_main(text1, text2, checklines=true, deadline=nil)
       # Set a deadline by which time the diff must be complete.
-      deadline ||= diff_newDeadline
+      deadline ||= diff_new_deadline
 
       # Check for null inputs.
       raise ArgumentError.new('Null inputs. (diff_main)') unless text1 || text2
@@ -26,8 +26,8 @@ class DiffMatchPatch
 
     def diff_main_compute_diff(text1, text2, checklines, deadline)
       # Trim off common prefix and suffix (speedup).
-      common_prefix, text1, text2 = diff_trimCommonPrefix(text1, text2)
-      common_suffix, text1, text2 = diff_trimCommonSuffix(text1, text2)
+      common_prefix, text1, text2 = diff_trim_common_prefix(text1, text2)
+      common_suffix, text1, text2 = diff_trim_common_suffix(text1, text2)
 
       # Compute the diff on the middle block.
       diffs = diff_compute(text1, text2, checklines, deadline)
@@ -35,7 +35,7 @@ class DiffMatchPatch
       # Restore the prefix and suffix.
       diffs.unshift([:equal, common_prefix]) unless common_prefix.nil?
       diffs.push([:equal, common_suffix]) unless common_suffix.nil?
-      diff_cleanupMerge(diffs)
+      diff_cleanup_merge(diffs)
 
       diffs
     end
@@ -43,15 +43,15 @@ class DiffMatchPatch
     private :diff_main_compute_diff
 
     # Calculate a new deadline using the @diff_timeout configuration value
-    def diff_newDeadline
+    def diff_new_deadline
       Time.now + (diff_timeout.zero? ? FIXNUM_MAX : diff_timeout)
     end
 
-    private :diff_newDeadline
+    private :diff_new_deadline
 
     # Trim off the common prefix
-    def diff_trimCommonPrefix(text1, text2)
-      if (common_length = diff_commonPrefix(text1, text2)).nonzero?
+    def diff_trim_common_prefix(text1, text2)
+      if (common_length = diff_common_prefix(text1, text2)).nonzero?
         common_prefix = text1[0...common_length]
         text1 = text1[common_length..-1]
         text2 = text2[common_length..-1]
@@ -60,11 +60,11 @@ class DiffMatchPatch
       return [common_prefix, text1, text2]
     end
 
-    private :diff_trimCommonPrefix
+    private :diff_trim_common_prefix
 
     # Trim off the common suffix
-    def diff_trimCommonSuffix(text1, text2)
-      if (common_length = diff_commonSuffix(text1, text2)).nonzero?
+    def diff_trim_common_suffix(text1, text2)
+      if (common_length = diff_common_suffix(text1, text2)).nonzero?
         common_suffix = text1[-common_length..-1]
         text1 = text1[0...-common_length]
         text2 = text2[0...-common_length]
@@ -73,7 +73,7 @@ class DiffMatchPatch
       return [common_suffix, text1, text2]
     end
 
-    private :diff_trimCommonSuffix
+    private :diff_trim_common_suffix
 
     # Find the differences between two texts.  Assumes that the texts do not
     # have any common prefix or suffix.
@@ -85,7 +85,7 @@ class DiffMatchPatch
         return diffs
 
       elsif checklines && text1.length > 100 && text2.length > 100
-        diff_lineMode(text1, text2, deadline)
+        diff_line_mode(text1, text2, deadline)
 
       else
         diff_bisect(text1, text2, deadline)
@@ -93,7 +93,7 @@ class DiffMatchPatch
     end
 
     def diff_compute_half_match(text1, text2, checklines, deadline)
-      if hm = diff_halfMatch(text1, text2)
+      if hm = diff_half_match(text1, text2)
         # A half-match was found, sort out the return data.
         text1_a, text1_b, text2_a, text2_b, mid_common = hm
 
